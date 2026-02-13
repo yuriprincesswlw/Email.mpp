@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h3>Email Your MPP</h3>
+
+<input id="name" placeholder="Your Name"><br><br>
+<input id="address" placeholder="Your Address"><br><br>
+<input id="postal" placeholder="Postal Code (ex: M5V3L9)"><br><br>
+<textarea id="message" placeholder="Your Message"></textarea><br><br>
+
+<button onclick="makeEmail()">Generate Email</button>
+
+<pre id="output"></pre>
+<button onclick="copyEmail()">Copy</button>
+
+<script>
+
+// Postal prefix → MPP mapping
+const mpps = {
+  "M5V": {
+    name: "Kristyn Wong-Tam",
+    email: "kwongtam.mpp@ola.org",
+    riding: "Toronto Centre"
+  },
+  "L4T": {
+    name: "Deepak Anand",
+    email: "danand.mpp@ola.org",
+    riding: "Mississauga–Malton"
+  },
+  "L2G": {
+    name: "King Vaughn",
+    email: "kvaughn.mpp@ola.org",
+    riding: "Niagara Falls"
+  }
+};
+
+function makeEmail() {
+
+  const name = document.getElementById("name").value;
+  const address = document.getElementById("address").value;
+  const postal = document.getElementById("postal").value
+                    .toUpperCase()
+                    .replace(/\s/g,'')
+                    .substring(0,3);
+  const message = document.getElementById("message").value;
+
+  const mpp = mpps[postal];
+
+  if (!mpp) {
+    document.getElementById("output").textContent =
+      "MPP not found for that postal code yet.";
+    return;
+  }
+
+  const email =
+`To: ${mpp.email}
+Subject: Concern from constituent in ${mpp.riding}
+
+Dear ${mpp.name},
+
+My name is ${name} and I live at ${address}.
+
+${message}
+
+Sincerely,
+${name}`;
+
+  document.getElementById("output").textContent = email;
+}
+
+function copyEmail() {
+  const text = document.getElementById("output").textContent;
+  navigator.clipboard.writeText(text);
+  alert("Copied!");
+}
+
+</script>
+
+</body>
+</html>
